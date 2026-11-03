@@ -174,4 +174,19 @@ window.addEventListener('beforeinstallprompt', event => {
 });
 window.addEventListener('appinstalled', () => { deferredInstallPrompt = null; const button = $('install-app'); if (button) button.hidden = true; const status = $('install-status'); if (status) status.textContent = 'Reformanda is installed on this device.'; });
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {}));
+const relatedApp = document.querySelector('.related-app');
+const relatedAppDismissalKey = 'reformanda:logamar-dismissed';
+try {
+  if (localStorage.getItem(relatedAppDismissalKey) === '1') relatedApp.hidden = true;
+} catch {
+  // The suggestion can still be dismissed for this visit if storage is unavailable.
+}
+document.querySelector('.related-app-dismiss').addEventListener('click', () => {
+  relatedApp.hidden = true;
+  try {
+    localStorage.setItem(relatedAppDismissalKey, '1');
+  } catch {
+    // Keep the suggestion hidden for this visit.
+  }
+});
 init();
