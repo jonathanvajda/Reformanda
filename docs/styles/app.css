@@ -10,3 +10,11 @@
 .related-app small{margin-top:4px;color:var(--muted);font-size:13px;line-height:1.45}
 .related-app-dismiss{flex:none;display:grid;place-items:center;width:40px;min-height:40px;padding:0;border:0;border-radius:5px;background:transparent;color:var(--muted);font-size:24px;line-height:1;cursor:pointer}
 .related-app-dismiss:hover,.related-app-dismiss:focus-visible{background:var(--line);color:var(--ink)}
+.app-install-button{margin-top:auto;padding:11px 14px;border:1px solid #75988a;border-radius:7px;background:transparent;color:#f8f4e9;font:inherit;font-size:75%;font-weight:600;cursor:pointer;text-align:left}
+.app-install-button:hover,.app-install-button:focus-visible{background:#ffffff18}
+.app-install-button[hidden]{display:none}
+#install-help{max-width:min(440px,calc(100% - 32px));padding:28px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+#install-help::backdrop{background:#17211c88}
+#install-help p{line-height:1.6;color:var(--muted)}
+
+.app-install-button:not([hidden]) + .sidebar-foot{margin-top:16px}

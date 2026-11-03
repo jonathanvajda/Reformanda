@@ -8,7 +8,6 @@ const DOCUMENTS = {
 };
 const DB_NAME = 'confessio-study';
 const state = { documents: {}, activeDocument: 'wsc', questions: [], progress: {}, selected: new Set(), history: [], session: null, charts: [] };
-let deferredInstallPrompt = null;
 const $ = (id) => document.getElementById(id);
 const cleanAnswer = (text = '') => text.replace(/\s*\[[a-z0-9]+\]/gi, '').replace(/\s+([,.;:?!])/g, '$1').trim();
 const normalize = (text) => cleanAnswer(text).toLowerCase().replace(/[^a-z0-9'\s]/g, '').replace(/\s+/g, ' ').trim();
@@ -162,18 +161,10 @@ async function init() {
   $('practice-selection').onclick = () => route('practice'); $('start-session').onclick = startSession; $('exit-session').onclick = exitSession;
   $('export-data').onclick = exportData; $('import-data').onclick = () => $('import-file').click(); $('import-file').onchange = e => e.target.files[0] && importData(e.target.files[0]); $('connect-folder').onclick = connectFolder;
   $('reset-data').onclick = async () => { if (!confirm('Reset all learning progress on this device? This cannot be undone.')) return; state.progress = {}; state.selected.clear(); state.history = []; await persist(); renderLibrary(); showToast('Learning data reset.'); };
-  $('install-app').onclick = async () => { if (!deferredInstallPrompt) return; deferredInstallPrompt.prompt(); const result = await deferredInstallPrompt.userChoice; deferredInstallPrompt = null; $('install-app').hidden = true; $('install-status').textContent = result.outcome === 'accepted' ? 'Reformanda was installed.' : 'Installation was dismissed. You can try again from the browser menu.'; };
   $('menu-toggle').onclick = () => { const open = document.querySelector('.sidebar').classList.toggle('open'); $('menu-toggle').setAttribute('aria-expanded', open); };
   const initial = location.hash.slice(1); if (['library','practice','progress','data'].includes(initial)) route(initial);
 }
 
-window.addEventListener('beforeinstallprompt', event => {
-  event.preventDefault(); deferredInstallPrompt = event;
-  const button = $('install-app'); if (button) button.hidden = false;
-  const status = $('install-status'); if (status) status.textContent = 'Install for one-tap access and offline study.';
-});
-window.addEventListener('appinstalled', () => { deferredInstallPrompt = null; const button = $('install-app'); if (button) button.hidden = true; const status = $('install-status'); if (status) status.textContent = 'Reformanda is installed on this device.'; });
-if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {}));
 const relatedApp = document.querySelector('.related-app');
 const relatedAppDismissalKey = 'reformanda:logamar-dismissed';
 try {

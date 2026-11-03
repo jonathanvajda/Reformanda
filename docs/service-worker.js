@@ -1,8 +1,9 @@
-const CACHE_NAME = 'reformanda-v2';
+const CACHE_NAME = 'reformanda-v3';
 const CORE_ASSETS = [
   './',
   './index.html',
   './app.js',
+  './pwa.js',
   './styles/app.css',
   './styles/documents.css',
   './manifest.webmanifest',
@@ -37,7 +38,6 @@ self.addEventListener('install', event => {
         await Promise.all(fontUrls.map(async url => cache.put(url, await fetch(url))));
       })()
     ]);
-    self.skipWaiting();
   })());
 });
 
@@ -76,4 +76,8 @@ self.addEventListener('fetch', event => {
       return Response.error();
     }
   })());
+});
+
+self.addEventListener('message', event => {
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
 });
